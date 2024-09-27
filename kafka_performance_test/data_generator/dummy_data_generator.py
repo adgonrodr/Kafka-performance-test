@@ -4,7 +4,7 @@ import random
 import argparse
 from faker import Faker
 from datetime import datetime
-
+import re  # Import regular expressions for parsing NUMBER(n,m)
 
 class DataGenerator:
     """
@@ -46,6 +46,23 @@ class DataGenerator:
                 return self.fake.lexify(text='?' * max_length)
         return None
 
+    def parse_number_format(self, doc):
+        """
+        Parse the NUMBER(n,m) format from the doc string.
+
+        Args:
+            doc (str): The doc string containing NUMBER(n,m).
+
+        Returns:
+            tuple: A tuple containing the precision (n) and scale (m), or None if not found.
+        """
+        match = re.match(r'number\((\d+),(\d+)\)', doc)
+        if match:
+            precision = int(match.group(1))
+            scale = int(match.group(2))
+            return precision, scale
+        return None
+
     def generate_dummy_data(self, schema, num_records=10, output_folder="output", schema_name="default_schema"):
         """
         Generate dummy data based on the provided schema.
@@ -71,6 +88,7 @@ class DataGenerator:
                 for field in schema['fields']:
                     field_name = field['name']
                     field_type = field['type']
+                    doc = field.get("doc", "").lower()
 
                     # Handle complex types
                     complex_value = self.handle_complex_type(field)
@@ -80,20 +98,34 @@ class DataGenerator:
 
                     # Handle basic types
                     if field_type == 'int':
-                        record[field_name] = random.randint(18, 99)
+                        record[field_name] = random.randint(0, 999999)
                     elif field_type == 'string':
-                        if field_name == 'email':
+                        if doc == 'email':
                             record[field_name] = self.fake.email()
-                        elif field_name == 'created_at':
+                        elif doc == 'name':
+                            record[field_name] = self.fake.name()
+                        elif doc == 'address':
+                            record[field_name] = self.fake.address()
+                        elif doc == 'postcode':
+                            record[field_name] = self.fake.postcode()
+                        elif doc == 'credit_card_number':
+                            record[field_name] = self.fake.credit_card_number()
+                        elif doc == 'timestamp_ntz':
                             record[field_name] = self.fake.date_time().isoformat()
-                        elif field_name == 'join_date':
+                        elif doc == 'date':
                             record[field_name] = self.fake.date()
-                        elif field_name == 'timestamp_ntz':
-                            record[field_name] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
                         else:
-                            record[field_name] = self.fake.word()[:5]
+                            record[field_name] = self.fake.word()
                     elif field_type == 'double':
-                        record[field_name] = round(random.uniform(0, 99999999999999), 7)
+                        # Check if the doc starts with NUMBER(n,m)
+                        if doc.startswith('number('):
+                            precision_scale = self.parse_number_format(doc)
+                            if precision_scale:
+                                precision, scale = precision_scale
+                                max_value = 10**(precision - scale) - 1
+                                record[field_name] = round(random.uniform(0, max_value), scale)
+                        else:
+                            record[field_name] = round(random.uniform(0, 99999999), 2)
 
                 # Write each record as a JSON object in a new line
                 outfile.write(json.dumps(record) + '\n')

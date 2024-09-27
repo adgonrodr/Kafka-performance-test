@@ -1,16 +1,20 @@
 {
-  "namespace": "example",
+  "namespace": "dmg.sandbox",
   "type": "record",
-  "name": "User",
+  "name": "fx_rates",
   "fields": [
-    {"name": "id", "type": "int"},
-    {"name": "name", "type": "string"},
-    {"name": "email", "type": "string"},
-    {"name": "age", "type": "int"},
-    {"name": "created_at", "type": "string"},
-    {"name": "join_date", "type": "string"},
-    {"name": "timestamp_ntz", "type": "string"},
-    {"name": "short_code", "type": {"type": "string", "maxLength": 5}},
-    {"name": "price", "type": "double"}
+    {"name": "field1", "type": {"type": "string", "maxLength": 3}},
+    {"name": "field2", "type": {"type": "string", "maxLength": 9}},
+    {"name": "field3", "type": "string", "doc": "timestamp_ntz"},
+    {"name": "field4", "type": "string", "doc": "date"},
+    {"name": "field5", "type": "string", "doc": "date"},
+    {"name": "field6", "type": {"type": "string", "maxLength": 5}},
+    {"name": "field7", "type": {"type": "string", "maxLength": 4}},
+    {"name": "field8", "type": {"type": "string", "maxLength": 3}},
+    {"name": "field9", "type": {"type": "string", "maxLength": 3}},
+    {"name": "field10", "type": "double", "doc": "number(15,7)"},
+    {"name": "field11", "type": "double", "doc": "number(15,7)"},
+    {"name": "field12", "type": "double", "doc": "number(15,7)"},
+    {"name": "field13", "type": {"type": "string", "maxLength": 8}}
   ]
 }
