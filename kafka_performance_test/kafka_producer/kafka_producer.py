@@ -9,7 +9,7 @@ class KafkaAvroProducer:
     A class to handle sending messages to Kafka using Avro serialization.
     """
 
-    def __init__(self, kafka_broker, schema_registry_url, kafka_topic, key_schema_file, value_schema_file):
+    def __init__(self, kafka_broker, schema_registry_url, kafka_topic, key_schema_file, value_schema_file, key_field):
         """
         Initialize the KafkaAvroProducer with Kafka and Schema Registry settings.
 
@@ -19,8 +19,10 @@ class KafkaAvroProducer:
             kafka_topic (str): The Kafka topic to send messages to.
             key_schema_file (str): Path to the Avro key schema file.
             value_schema_file (str): Path to the Avro value schema file.
+            key_field (str): The field name to use as the key.
         """
         self.kafka_topic = kafka_topic
+        self.key_field = key_field
 
         # Load key and value schemas from files
         self.key_schema = self.load_avro_schema(key_schema_file)
@@ -59,14 +61,14 @@ class KafkaAvroProducer:
         with open(data_file, 'r') as json_file:
             for line in json_file:
                 record = json.loads(line.strip())  # Load each line as a JSON object
-                key = str(record['id'])  # Convert 'id' to a string for the key
+                key = str(record[self.key_field])  # Use the configurable key field
                 self.avro_producer.produce(topic=self.kafka_topic, key={"id": key}, value=record)
-                print(f"Sent record: {record}")
+                print(f"Sent record with key 'id': {key} and value: {record}")
 
         # Wait for all messages to be delivered
         self.avro_producer.flush()
 
-def main(kafka_broker, schema_registry_url, kafka_topic, key_schema_file, value_schema_file, data_file):
+def main(kafka_broker, schema_registry_url, kafka_topic, key_schema_file, value_schema_file, data_file, key_field):
     """
     Main function to send JSONL data to Kafka using Avro serialization.
 
@@ -77,8 +79,9 @@ def main(kafka_broker, schema_registry_url, kafka_topic, key_schema_file, value_
         key_schema_file (str): Path to the Avro key schema file.
         value_schema_file (str): Path to the Avro value schema file.
         data_file (str): The path to the JSONL data file.
+        key_field (str): The field name to use as the key.
     """
-    producer = KafkaAvroProducer(kafka_broker, schema_registry_url, kafka_topic, key_schema_file, value_schema_file)
+    producer = KafkaAvroProducer(kafka_broker, schema_registry_url, kafka_topic, key_schema_file, value_schema_file, key_field)
     producer.send_to_kafka_with_avro(data_file)
 
 
@@ -91,8 +94,9 @@ if __name__ == "__main__":
     parser.add_argument("-k", "--key-schema-file", type=str, required=True, help="Path to the Avro key schema file")
     parser.add_argument("-v", "--value-schema-file", type=str, required=True, help="Path to the Avro value schema file")
     parser.add_argument("-d", "--data-file", type=str, required=True, help="Path to the JSONL data file")
+    parser.add_argument("-kf", "--key-field", type=str, required=True, help="Field name to use as key for Kafka messages")
 
     args = parser.parse_args()
 
     # Run the main function with parsed arguments
-    main(args.kafka_broker, args.schema_registry_url, args.kafka_topic, args.key_schema_file, args.value_schema_file, args.data_file)
+    main(args.kafka_broker, args.schema_registry_url, args.kafka_topic, args.key_schema_file, args.value_schema_file, args.data_file, args.key_field)

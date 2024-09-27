@@ -70,6 +70,7 @@ python kafka_performance_test/kafka_producer/kafka_producer.py \
     -b localhost:9092 \
     -r http://localhost:8081 \
     -t test_topic \
+    -kt id \
     -k kafka_performance_test/common/schemas/kafka_key_schema.avsc \
     -v kafka_performance_test/common/schemas/kafka_value_schema.avsc \
     -d target/1000_kafka_value_schema.jsonl
@@ -78,6 +79,7 @@ python kafka_performance_test/kafka_producer/kafka_producer.py \
 * -b or --kafka-broker: Kafka broker address (e.g., localhost:9092).
 * -r or --schema-registry-url: Schema Registry URL (e.g., http://localhost:8081).
 * -t or --kafka-topic: Kafka topic to send messages to (e.g., test_topic).
+* -kf or --key-field: Field name in the JSON data to use as the Kafka message key (e.g., id).
 * -k or --key-schema-file: Path to the Avro key schema file (e.g., kafka_performance_test/common/schemas/kafka_key_schema.avsc).
 * -v or --value-schema-file: Path to the Avro value schema file (e.g., kafka_performance_test/common/schemas/kafka_value_schema.avsc).
 * -d or --data-file: Path to the dataset file to send (e.g., target/1000_kafka_value_schema.jsonl).
