@@ -41,6 +41,18 @@ cd cp-all-in-one/cp-all-in-one
 docker compose up -d 
 ```
 
+### Available Services after Deployment
+
+Once the Confluent Kafka cluster is deployed, the following services will be available:
+
+- **Zookeeper**: Available at `localhost:2181` — Manages and coordinates the Kafka brokers.
+- **Kafka Broker**: Available at `localhost:9092` — Main entry point for producing and consuming Kafka messages.
+- **Schema Registry**: Available at `localhost:8081` — Manages and stores Avro schemas for Kafka topics.
+- **Kafka Connect**: Available at `localhost:8083` — Service to stream data between Kafka and other systems using connectors.
+- **Control Center**: Available at `localhost:9021` — Web-based GUI for managing and monitoring Kafka clusters and services.
+- **ksqlDB Server**: Available at `localhost:8088` — Provides SQL-like interface for stream processing on Kafka topics.
+- **REST Proxy**: Available at `localhost:8082` — Allows producing and consuming Kafka messages via REST API.
+
 ## Generate dummy datasets
 Use the dummy_data_generator.py script to generate dummy datasets based on Avro schemas.
 
