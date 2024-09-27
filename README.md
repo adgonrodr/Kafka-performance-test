@@ -33,12 +33,22 @@ pip install -r requirements.txt
 However, the [deploy the Confluent Kafka cluster](#deploy-confluent-kafka-cluster) does not need these Python dependencies. You only need Docker installed. The Kafka cluster can be deployed using Docker Compose, as detailed in the Deploy Confluent Kafka cluster section.
 
 ## Deploy Confluent Kafka cluster
-Follow [Confluent guide](https://github.com/confluentinc/cp-all-in-one/tree/7.5.0-post/cp-all-in-one)
+
+### Without Additional Kafka Connectors
+Follow [the official Confluent guide](https://github.com/confluentinc/cp-all-in-one/tree/7.5.0-post/cp-all-in-one)for deploying a Confluent Kafka cluster without additional connectors: 
 
 ```bash
 git clone https://github.com/confluentinc/cp-all-in-one.git
 cd cp-all-in-one/cp-all-in-one
 docker compose up -d 
+```
+
+### With Additional Kafka Connectors
+Install additional Kafka connectors by modifying the [Dockerfile.connect](kafka_docker_compose%2FDockerfile.connect). Available connectors can be found on the [Confluent Hub](https://www.confluent.io/hub/): 
+
+```bash
+cd kafka_docker_compose
+docker compose up -d --build
 ```
 
 ### Available Services after Deployment

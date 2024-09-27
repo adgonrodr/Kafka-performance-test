@@ -1,0 +1,5 @@
+# Base image from Confluent Kafka Connect
+FROM cnfldemos/cp-server-connect-datagen:0.6.2-7.5.0
+
+RUN confluent-hub install --no-prompt snowflakeinc/snowflake-kafka-connector:latest && \
+    confluent-hub install --no-prompt debezium/debezium-connector-postgresql:latest
