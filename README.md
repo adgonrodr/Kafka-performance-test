@@ -95,3 +95,5 @@ python kafka_performance_test/kafka_producer/kafka_producer.py \
 * -kf or --key-field: (Optional) Field name in the JSON data to use as the Kafka message key (e.g., id). If this is not provided, a random UUID will be used as the key.
 
 
+openssl s_client -showcerts -connect <server>:<port> </dev/null 2>/dev/null | openssl x509 -outform PEM > root-ca.crt
+
