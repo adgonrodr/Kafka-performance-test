@@ -97,3 +97,4 @@ python kafka_performance_test/kafka_producer/kafka_producer.py \
 
 openssl s_client -showcerts -connect <server>:<port> </dev/null 2>/dev/null | openssl x509 -outform PEM > root-ca.crt
 
+export JAVA_TOOL_OPTIONS="-Dhttp.proxyHost=proxy.example.com -Dhttp.proxyPort=8080 -Dhttps.proxyHost=proxy.example.com -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=localhost|127.0.0.1|*.example.com"
