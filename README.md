@@ -95,6 +95,16 @@ python kafka_performance_test/kafka_producer/kafka_producer.py \
 * -kf or --key-field: (Optional) Field name in the JSON data to use as the Kafka message key (e.g., id). If this is not provided, a random UUID will be used as the key.
 
 
-openssl s_client -showcerts -connect <server>:<port> </dev/null 2>/dev/null | openssl x509 -outform PEM > root-ca.crt
+# ARG to pass the version during build (with a default value)
+ARG CONNECTOR_VERSION=latest
 
-export JAVA_TOOL_OPTIONS="-Dhttp.proxyHost=proxy.example.com -Dhttp.proxyPort=8080 -Dhttps.proxyHost=proxy.example.com -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=localhost|127.0.0.1|*.example.com"
+# Set environment variables
+ENV CONNECT_PLUGIN_PATH="/usr/share/java"
+
+# Download and install the Snowflake Kafka connector
+RUN curl -O https://api.hub.confluent.io/api/plugins/snowflakeinc/snowflake-kafka-connector/versions/${CONNECTOR_VERSION}/archive \
+    && unzip archive -d ${CONNECT_PLUGIN_PATH} \
+    && rm archive
+
+# Make sure the connector is in the correct plugin path
+ENV CONNECT_PLUGIN_PATH="${CONNECT_PLUGIN_PATH}"
